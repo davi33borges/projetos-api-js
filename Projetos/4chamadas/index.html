@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Informações Usuário</title>
+</head>
+<body>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '797505197290639',
+            xfbml      : true,
+            version    : 'v3.2'
+          });
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+        };
+      
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+
+         function statusChangeCallback(response){
+             if(response.status === 'connected'){
+                console.log('Usuário Autorizado');
+
+                requestAPI();
+             }else{
+                 console.log('Não Autorizado');
+             }
+         }
+
+        function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        function requestAPI(){
+            FB.api('me/?fields=name,photos.limit(10){link},family,relationship_status&limit=10', function(response){
+                if(response){
+                    console.log(response);
+                }
+            })
+        }
+
+        function mostrarFoto(pagina){
+            foto = document.getElementById('pagina');
+
+            foto.innerHTML = ''
+            for(var i = 0; i < pagina.photos.data[i].length; i++){
+                foto.innerHTML = `
+                <img src="${paginas.photos.data[i].link}" alt="...">
+                    
+                `
+            }
+            
+        }
+      </script>
+      </script>
+      
+
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+
+
+<div id="pagina"></div>
+</body>
+</html>

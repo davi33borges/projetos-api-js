@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        img{
+            width: 300px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '987272861660959',
+            xfbml      : true,
+            version    : 'v3.2'
+          });
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+        };
+      
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+
+        function statusChangeCallback(response){
+             FB.login(function(response){
+                if(response.status === 'connected'){
+                 console.log("Usuáriio Autorizado");
+                 console.log(response);
+
+                 requestAPI();
+            }else{
+                 console.log("Não Autorizado")
+            }
+            }) 
+        }
+
+         function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        function requestAPI(){
+            FB.api('me?fields=id,name,picture{width,height,url}', function(response){
+                if(response){
+                    mostrarFoto(response);
+                }
+            });
+        }
+
+        function mostrarFoto(pagina){
+            foto = document.getElementById('pagina');
+
+            foto.innerHTML = ''
+            foto.innerHTML = `
+                <img src="${pagina.picture.data.url}">
+            `
+        }
+      </script>
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="pagina"></div>
+</body>
+</html>

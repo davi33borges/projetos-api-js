@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Páginas Facebook</title>
+</head>
+<body>
+    <script>
+        window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '2154637381260469',
+            xfbml      : true,
+            version    : 'v3.2'
+        });
+          
+          FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+
+    };
+      
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "https://connect.facebook.net/en_US/sdk.js";
+           fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        function statusChangeCallback(response){
+             if(response.status === 'connected'){
+                 console.log("Usuário Autorizado");
+                 requestAPI();
+            }
+            else{
+                console.log("Não Autoruzado")
+            }
+        }
+        function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        function requestAPI(){
+            FB.api('me?fields=id,name,likes.limit(100){picture,fan_count,link,name}', function(response){
+                if(response){
+                    console.log(response);
+                    percorrePagina(response);
+                }
+            })
+        }
+
+        function percorrePagina(paginas){
+            pagina = document.getElementById('paginas');
+
+            pagina.innerHTML = ''
+            for(var i = 0; i < paginas.likes.data.length; i++){
+                pagina.innerHTML += `
+                    <div class="well">
+                        <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                            <img class="media-object" src="${paginas.likes.data[i].picture.data.url}" alt="...">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">${paginas.likes.data[i].name}</h4>
+                                <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> Curtidas <span class="badge">${paginas.likes.data[i].fan_count}</span></p>
+                                <p><a href="${paginas.likes.data[i].url}" target="_blank">Visitar a página</a></p>
+                            
+                        </div>
+                        </div>
+                    </div>
+                `
+            }
+        }
+
+      </script>
+
+
+
+<fb:login-button scope="public_profile,email, user_likes" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div class="container">
+    <div id="paginas"></div>
+</div>
+
+</body>
+</html>
